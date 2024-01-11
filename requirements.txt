@@ -8,4 +8,5 @@ langchain_experimental
 pypdf
 pinecone-client
 numexpr
-pymysql
+pymssql
+audio-recorder-streamlit
