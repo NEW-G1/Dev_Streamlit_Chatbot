@@ -9,7 +9,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
 
 def record_audio():
     
