@@ -30,7 +30,9 @@ st.set_page_config(page_title="LangChain: Chat with Multi Tools", page_icon="ðŸ
 st.title("ðŸ˜º LangChain: Chat with Multi Tools")
 
 os.environ["OPENAI_API_KEY"]    = st.secrets.OPENAI_API_KEY
+
 os.environ["DB_URI"]            = st.secrets.DB_URL
+
 os.environ["VECTARA_CUSTOMER_ID"] = st.secrets.VECTARA_CUSTOMER_ID
 os.environ["VECTARA_CORPUS_ID"]   = st.secrets.VECTARA_CORPUS_ID
 os.environ["VECTARA_API_KEY"]     = st.secrets.VECTARA_API_KEY
@@ -101,8 +103,10 @@ def sql_agent_retriever(query: str) -> str:
   """
   #Include tables
   include_tables=[ "TEMP_TB_QMS_DYN_VEND_RESULT" ]
+
   db = configure_db(db_uri)
   llm = ChatOpenAI(model_name='gpt-3.5-turbo-1106',temperature=0)
+  
   toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
   # custom_suffix = """
