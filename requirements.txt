@@ -9,4 +9,7 @@ pypdf
 pinecone-client
 numexpr
 pymssql
-audio-recorder-streamlit
+wikipedia
+faiss-cpu
+faiss-gpu
+langchain-community
