@@ -130,8 +130,10 @@ def vectara_agent_retriever(query: str) -> str:
   llm = ChatOpenAI(model_name='gpt-3.5-turbo-1106',temperature=0)
 
   retriever = vectara.as_retriever()
+
   qa = RetrievalQA.from_llm(llm=llm, retriever=retriever)
   response = qa({"query":query})
+  
   return response['result']
 
 @tool
@@ -154,11 +156,11 @@ def wikipedia_agent_retriever(query: str) -> str:
 
 functions = [
 	format_tool_to_openai_function(f) for f in [
-		vectara_agent_retriever,
-		sql_agent_retriever,
-		wikipedia_agent_retriever
-		]
-]
+                vectara_agent_retriever,
+                sql_agent_retriever,
+                wikipedia_agent_retriever
+		    ]
+    ]
 
 # conversational memory
 conversational_memory = ConversationBufferWindowMemory(
@@ -205,10 +207,12 @@ config = RunnableConfig(callbacks=[StreamlitCallbackHandler(st.container())])
 
 chain = prompt | model | OpenAIFunctionsAgentOutputParser() | route 
 chain = chain.with_config(config=config)
+
 # Setup memory for contextual conversation
 msgs = StreamlitChatMessageHistory()
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True) 
- 
+
+
 if "messages" not in st.session_state or st.sidebar.button("Clear message history"):
     st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
