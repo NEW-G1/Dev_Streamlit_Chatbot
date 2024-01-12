@@ -119,7 +119,7 @@ def sql_agent_retriever(query: str) -> str:
   return response
 
 @tool  # tool 데코레이터를 통해 openai function 형태로 쉽게 변환 가능
-def vectara_agent_retriever(query: str) -> str:
+def web_agent_retriever(query: str) -> str:
   """Search for KnowledgeBase First,"""
   vectara = Vectara(
       vectara_customer_id = os.getenv("VECTARA_CUSTOMER_ID"),
@@ -156,7 +156,7 @@ def wikipedia_agent_retriever(query: str) -> str:
 
 functions = [
 	format_tool_to_openai_function(f) for f in [
-                vectara_agent_retriever,
+                web_agent_retriever,
                 sql_agent_retriever,
                 wikipedia_agent_retriever
 		    ]
@@ -197,7 +197,7 @@ def route(result):
 	else: # 함수를 쓰기로 결정한다면 -> 함수명에 따라 어떤 함수를 쓸지 결정해주고, argument를 넣은 값 반환
 		tools = {
 			"sql_agent_retriever": sql_agent_retriever,
-			"vectara_agent_retriever" : vectara_agent_retriever,
+			"web_agent_retriever" : web_agent_retriever,
 			"wikipedia_agent_retriever" : wikipedia_agent_retriever
 
 		}
@@ -212,7 +212,7 @@ chain = chain.with_config(config=config)
 msgs = StreamlitChatMessageHistory()
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True) 
 
-
+# Chatbot Run Main
 if "messages" not in st.session_state or st.sidebar.button("Clear message history"):
     st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
