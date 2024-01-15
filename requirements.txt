@@ -13,3 +13,4 @@ wikipedia
 faiss-cpu
 faiss-gpu
 langchain-community
+audio_recorder_streamlit
