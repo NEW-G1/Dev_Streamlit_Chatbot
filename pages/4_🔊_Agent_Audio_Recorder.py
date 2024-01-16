@@ -201,7 +201,7 @@ def main():
     result = invoke_langchain(langchain, translation_text)
     print(result)
     
-    result = translate_text(result,"korean", "korean")
+    result = translate_text(result,"korean", "English")
     st.write(result)
     
     # TTS 수행
