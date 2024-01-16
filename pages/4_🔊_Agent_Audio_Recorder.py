@@ -5,7 +5,6 @@ import os
 import time
 
 from langchain.prompts import ChatPromptTemplate
-# from langchain_openai import ChatOpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Vectara
 from langchain_core.output_parsers import StrOutputParser
