@@ -5,6 +5,7 @@ tiktoken
 openai
 langchain
 langchain_experimental
+langchain-community
 pypdf
 pinecone-client
 numexpr
@@ -12,5 +13,4 @@ pymssql
 wikipedia
 faiss-cpu
 faiss-gpu
-langchain-community
 audio_recorder_streamlit
