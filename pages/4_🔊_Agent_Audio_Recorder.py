@@ -7,9 +7,23 @@ import time
 from langchain.prompts import ChatPromptTemplate
 # from langchain_openai import ChatOpenAI
 from langchain.chat_models import ChatOpenAI
+from langchain.vectorstores import Vectara
 from langchain_core.output_parsers import StrOutputParser
+from langchain.schema.runnable import RunnablePassthrough
 
 os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
+
+os.environ["VECTARA_CUSTOMER_ID"] = st.secrets.VECTARA_CUSTOMER_ID
+os.environ["VECTARA_CORPUS_ID"]   = st.secrets.VECTARA_CORPUS_ID
+os.environ["VECTARA_API_KEY"]     = st.secrets.VECTARA_API_KEY
+
+vectara = Vectara(
+        vectara_customer_id = os.getenv("VECTARA_CUSTOMER_ID"),
+        vectara_corpus_id   = os.getenv("VECTARA_CORPUS_ID"),
+        vectara_api_key     = os.getenv("VECTARA_API_KEY")
+    )
+
+retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
 
 def record_audio():
     
@@ -160,7 +174,12 @@ def translate_text(input, target_language, translate_language):
   output_parser = StrOutputParser()
 
   # 생성된 요소들을 연결하여 Langchain 생성
-  chain = prompt | model | output_parser
+  chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | prompt 
+        | model 
+        | output_parser
+    )
 
   end_time = time.time()
   st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
