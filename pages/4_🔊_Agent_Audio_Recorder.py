@@ -5,15 +5,10 @@ import os
 import time
 
 from langchain.prompts import ChatPromptTemplate
+# from langchain_openai import ChatOpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.vectorstores import Vectara
-from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import RetrievalQA
-from langchain.agents import initialize_agent, Tool
-from langchain.agents import AgentType
-from langchain.callbacks import StreamlitCallbackHandler
 from langchain_core.runnables import RunnablePassthrough
 
 os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
