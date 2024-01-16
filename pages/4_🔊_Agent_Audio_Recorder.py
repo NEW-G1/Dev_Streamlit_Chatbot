@@ -8,23 +8,8 @@ from langchain.prompts import ChatPromptTemplate
 # from langchain_openai import ChatOpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
-from langchain.vectorstores import Vectara
-from langchain_core.runnables import RunnablePassthrough
 
 os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
-
-os.environ["VECTARA_CUSTOMER_ID"] = st.secrets.VECTARA_CUSTOMER_ID
-os.environ["VECTARA_CORPUS_ID"]   = st.secrets.VECTARA_CORPUS_ID
-os.environ["VECTARA_API_KEY"]     = st.secrets.VECTARA_API_KEY
-
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
-vectara = Vectara(
-        vectara_customer_id = os.getenv("VECTARA_CUSTOMER_ID"),
-        vectara_corpus_id   = os.getenv("VECTARA_CORPUS_ID"),
-        vectara_api_key     = os.getenv("VECTARA_API_KEY")
-    )
-
 
 def record_audio():
     
@@ -125,8 +110,6 @@ def perform_tts(translation_text):
 def create_langchain():
     
     start_time = time.time()
-
-    retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
     
     # ChatPromptTemplate를 사용하여 prompt 생성
     prompt = ChatPromptTemplate.from_messages([
@@ -141,12 +124,7 @@ def create_langchain():
     output_parser = StrOutputParser()
 
     # 생성된 요소들을 연결하여 Langchain 생성
-    chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt
-        | model
-        | StrOutputParser()
-    )
+    chain = prompt | model | output_parser
 
     end_time = time.time()
     st.write(f"create_langchain 실행 시간: {end_time - start_time} 초")
@@ -188,6 +166,7 @@ def translate_text(input, target_language, translate_language):
   st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
 
   return chain.invoke({"target_language": target_language,"input":input})
+
         
 # Streamlit 앱
 def main():
@@ -210,4 +189,4 @@ def main():
     perform_tts(result)
 
 if __name__ == "__main__":
-    main()  
+    main()        
