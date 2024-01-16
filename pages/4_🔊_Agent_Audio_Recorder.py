@@ -128,6 +128,8 @@ def create_langchain():
 			("user", "{input}")
     ])
 
+    retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+
     # ChatOpenAI를 사용하여 모델 생성
     model = ChatOpenAI(model="gpt-4")
 
@@ -136,6 +138,13 @@ def create_langchain():
 
     # 생성된 요소들을 연결하여 Langchain 생성
     chain = prompt | model | output_parser
+
+    chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | prompt 
+        | model 
+        | output_parser
+    )
 
     end_time = time.time()
     st.write(f"create_langchain 실행 시간: {end_time - start_time} 초")
@@ -155,36 +164,31 @@ def invoke_langchain(chain, input):
     return result
 
 
-def translate_text(input, target_language, translate_language): 
+# def translate_text(input, target_language, translate_language): 
   
-  start_time = time.time()  
+#   start_time = time.time()  
     
-  # ChatPromptTemplate를 사용하여 prompt 생성
-  prompt = ChatPromptTemplate.from_messages([
-    ("system", f"Translate the following text into {translate_language}: {input}"),
-  ])
+#   # ChatPromptTemplate를 사용하여 prompt 생성
+#   prompt = ChatPromptTemplate.from_messages([
+#     ("system", f"Translate the following text into {translate_language}: {input}"),
+#   ])
 
-  # ChatOpenAI를 사용하여 모델 생성
-  model = ChatOpenAI(model="gpt-3.5-turbo-16k")
+#   # ChatOpenAI를 사용하여 모델 생성
+#   model = ChatOpenAI(model="gpt-3.5-turbo-16k")
 
-  # StrOutputParser를 사용하여 결과 파싱
-  output_parser = StrOutputParser()
+#   # StrOutputParser를 사용하여 결과 파싱
+#   output_parser = StrOutputParser()
 
-  retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+  
 
 
-  # 생성된 요소들을 연결하여 Langchain 생성
-  chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt 
-        | model 
-        | output_parser
-    )
+#   # 생성된 요소들을 연결하여 Langchain 생성
+#   chain = prompt | model | output_parser
 
-  end_time = time.time()
-  st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
+#   end_time = time.time()
+#   st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
 
-  return chain.invoke({"target_language": target_language,"input":input})
+#   return chain.invoke({"target_language": target_language,"input":input})
 
         
 # Streamlit 앱
