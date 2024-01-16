@@ -23,8 +23,6 @@ vectara = Vectara(
         vectara_api_key     = os.getenv("VECTARA_API_KEY")
     )
 
-retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
-
 def record_audio():
     
     start_time = time.time()
@@ -172,6 +170,9 @@ def translate_text(input, target_language, translate_language):
 
   # StrOutputParser를 사용하여 결과 파싱
   output_parser = StrOutputParser()
+
+  retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+
 
   # 생성된 요소들을 연결하여 Langchain 생성
   chain = (
