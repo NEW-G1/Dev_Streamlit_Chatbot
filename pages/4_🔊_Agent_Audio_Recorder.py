@@ -5,22 +5,11 @@ import os
 import time
 
 from langchain.prompts import ChatPromptTemplate
+# from langchain_openai import ChatOpenAI
 from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Vectara
 from langchain_core.output_parsers import StrOutputParser
-from langchain.schema.runnable import RunnablePassthrough
 
 os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
-
-os.environ["VECTARA_CUSTOMER_ID"] = st.secrets.VECTARA_CUSTOMER_ID
-os.environ["VECTARA_CORPUS_ID"]   = st.secrets.VECTARA_CORPUS_ID
-os.environ["VECTARA_API_KEY"]     = st.secrets.VECTARA_API_KEY
-
-vectara = Vectara(
-        vectara_customer_id = os.getenv("VECTARA_CUSTOMER_ID"),
-        vectara_corpus_id   = os.getenv("VECTARA_CORPUS_ID"),
-        vectara_api_key     = os.getenv("VECTARA_API_KEY")
-    )
 
 def record_audio():
     
@@ -128,8 +117,6 @@ def create_langchain():
 			("user", "{input}")
     ])
 
-    retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
-
     # ChatOpenAI를 사용하여 모델 생성
     model = ChatOpenAI(model="gpt-4")
 
@@ -137,12 +124,7 @@ def create_langchain():
     output_parser = StrOutputParser()
 
     # 생성된 요소들을 연결하여 Langchain 생성
-    chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt 
-        | model 
-        | output_parser
-    )
+    chain = prompt | model | output_parser
 
     end_time = time.time()
     st.write(f"create_langchain 실행 시간: {end_time - start_time} 초")
@@ -162,103 +144,28 @@ def invoke_langchain(chain, input):
     return result
 
 
-# def translate_text(input, target_language, translate_language): 
+def translate_text(input, target_language, translate_language): 
   
-#   start_time = time.time()  
+  start_time = time.time()  
     
-#   # ChatPromptTemplate를 사용하여 prompt 생성
-#   prompt = ChatPromptTemplate.from_messages([
-#     ("system", f"Translate the following text into {translate_language}: {input}"),
-#   ])
+  # ChatPromptTemplate를 사용하여 prompt 생성
+  prompt = ChatPromptTemplate.from_messages([
+    ("system", f"Translate the following text into {translate_language}: {input}"),
+  ])
 
-#   # ChatOpenAI를 사용하여 모델 생성
-#   model = ChatOpenAI(model="gpt-3.5-turbo-16k")
+  # ChatOpenAI를 사용하여 모델 생성
+  model = ChatOpenAI(model="gpt-3.5-turbo-16k")
 
-#   # StrOutputParser를 사용하여 결과 파싱
-#   output_parser = StrOutputParser()
+  # StrOutputParser를 사용하여 결과 파싱
+  output_parser = StrOutputParser()
 
-  
+  # 생성된 요소들을 연결하여 Langchain 생성
+  chain = prompt | model | output_parser
 
+  end_time = time.time()
+  st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
 
-#   # 생성된 요소들을 연결하여 Langchain 생성
-#   chain = prompt | model | output_parser
-
-#   end_time = time.time()
-#   st.write(f"translate_text 실행 시간: {end_time - start_time} 초")  
-
-#   return chain.invoke({"target_language": target_language,"input":input})
-
-# def vectara_agent(user_input):
-#     msgs = StreamlitChatMessageHistory()
-#     memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, return_messages=True)
-
-#     # Setup LLM 
-#     llm = ChatOpenAI(
-#         model_name="gpt-3.5-turbo", openai_api_key=openai_api_key, temperature=0, streaming=True
-#     )
-
-#     # Create KnowledgeBase_Prompt
-#     knowledgeBase_template = """
-#     SYSTEM
-#     You are an expert researcher and writer, tasked with answering any question.
-
-#     Generate a comprehensive and informative, yet concise answer of 250 words or less for the given question based solely on the provided search results (URL and content).
-#     You must only use information from the provided search results. Use an unbiased and journalistic tone. Combine search results together into a coherent answer.
-#     Do not repeat text. Cite search results using [${{number}}] notation. Only cite the most relevant results that answer the question accurately.
-#     Place these citations at the end of the sentence or paragraph that reference them - do not put them all at the end.
-#     If different results refer to different entities within the same name, write separate answers for each entity.
-#     If you want to cite multiple results for the same sentence, format it as `[${{number1}}] [${{number2}}]`.
-#     However, you should NEVER do this with the same number - if you want to cite `number1` multiple times for a sentence, only do `[${{number1}}]` not `[${{number1}}] [${{number1}}]`
-
-#     You should use bullet points in your answer for readability. Put citations where they apply rather than putting them all at the end.
-#     If there is nothing in the context relevant to the question at hand, just say "Hmm, I'm not sure." Don't try to make up an answer.
-#     Anything between the following `context` html blocks is retrieved from a knowledge bank, not part of the conversation with the user.
-#     You must answer in Korean.
-
-#     <context>
-#         {context}
-#     <context/>
-
-#     HUMAN
-#     {question}
-#     """
-#     knowledgeBase_prompt = ChatPromptTemplate.from_template(knowledgeBase_template)
-
-#     retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
-
-#     # retrieval qa chain
-#     knowledgeBase_qa = RetrievalQA.from_chain_type(
-#         llm=llm,
-#         chain_type="stuff",
-#         retriever=retriever,
-#         chain_type_kwargs={"prompt": knowledgeBase_prompt}
-#     )
-
-#     # search = GoogleSearchAPIWrapper()
-
-#     tools = [
-#         Tool(
-#             name='Knowledge Base',
-#             func=knowledgeBase_qa.run,
-#             description=(
-#                 'use this tool when answering general knowledge queries to get '#tool description 수정 필요
-#                 'more information about the topic'
-#             )
-#         ),
-#         # Tool(
-#         #     name="Google Search",
-#         #     func=search.run,
-#         #     description="Search Google for recent results.",#tool description 수정 필요
-#         #  )
-#     ]
-
-#     st_callback = StreamlitCallbackHandler(st.container())
-
-#     mrkl = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True,memory=memory,handle_parsing_errors=True)
-    
-#     answer = mrkl.run(user_input, callbacks=[st_callback])
-
-#     return answer
+  return chain.invoke({"target_language": target_language,"input":input})
 
         
 # Streamlit 앱
@@ -273,10 +180,10 @@ def main():
     langchain = create_langchain()
     
     result = invoke_langchain(langchain, translation_text)
-    st.write(result)
+    print(result)
     
-    # result = translate_text(result,"korean", "English")
-    # st.write(result)
+    result = translate_text(result,"korean", "English")
+    st.write(result)
     
     # TTS 수행
     perform_tts(result)
