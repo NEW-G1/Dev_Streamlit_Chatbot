@@ -230,14 +230,15 @@ def main():
 
     st.write(f"**********************langchain: {langchain}")
     
-    result = invoke_langchain(langchain, translation_text)
-    st.write(result)
+    answer = invoke_langchain(langchain, translation_text)
+    st.write(f"**********************answer: {answer}")
+    st.write(answer)
     
     # result = translate_text(result,"korean", "English")
     # st.write(result)
     
     # TTS 수행
-    perform_tts(result)
+    perform_tts(answer)
 
 if __name__ == "__main__":
     main()        
