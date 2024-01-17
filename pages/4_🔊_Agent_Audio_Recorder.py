@@ -227,6 +227,8 @@ def main():
     st.write(f"**********************translation_text: {translation_text}")
     
     langchain = create_langchain()
+
+    st.write(f"**********************langchain: {langchain}")
     
     result = invoke_langchain(langchain, translation_text)
     st.write(result)
