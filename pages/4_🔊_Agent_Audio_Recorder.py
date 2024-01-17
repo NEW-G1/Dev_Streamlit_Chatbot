@@ -183,7 +183,7 @@ def invoke_langchain(chain, input):
     start_time = time.time()
     
     # Langchain에 주제를 전달하여 실행
-    result = chain.invoke({"input":input})
+    result = chain.invoke(input)
 
     end_time = time.time()
     st.write(f"invoke_langchain 실행 시간: {end_time - start_time} 초")
