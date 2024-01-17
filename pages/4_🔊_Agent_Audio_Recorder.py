@@ -155,7 +155,7 @@ def create_langchain():
     {question}
     """
     retriever = vectara.as_retriever(search_type="similarity", search_kwargs={"k": 2})
-    
+
     knowledgeBase_prompt = ChatPromptTemplate.from_template(knowledgeBase_template)
 
     # ChatOpenAI를 사용하여 모델 생성
@@ -223,6 +223,8 @@ def main():
     
     # STT 및 번역 수행
     transcription_text, translation_text = perform_stt_and_translation(audio_file_path)
+
+    print(translation_text)
     
     langchain = create_langchain()
     
