@@ -224,15 +224,11 @@ def main():
     
     # STT 및 번역 수행
     transcription_text, translation_text = perform_stt_and_translation(audio_file_path)
-
-    st.write(f"**********************translation_text: {translation_text}")
+    # st.write(f"**********************translation_text: {translation_text}")
     
     langchain = create_langchain()
-
-    st.write(f"**********************langchain: {langchain}")
     
     answer = invoke_langchain(langchain, translation_text)
-    st.write(f"**********************answer: {answer}")
     st.write(answer)
     
     # result = translate_text(result,"korean", "English")
