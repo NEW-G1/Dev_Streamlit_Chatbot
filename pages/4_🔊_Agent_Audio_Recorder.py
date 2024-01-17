@@ -224,7 +224,7 @@ def main():
     # STT 및 번역 수행
     transcription_text, translation_text = perform_stt_and_translation(audio_file_path)
 
-    print(translation_text)
+    print(f"**********************{translation_text}")
     
     langchain = create_langchain()
     
