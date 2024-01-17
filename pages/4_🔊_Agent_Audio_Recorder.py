@@ -159,7 +159,8 @@ def create_langchain():
     knowledgeBase_prompt = ChatPromptTemplate.from_template(knowledgeBase_template)
 
     # ChatOpenAI를 사용하여 모델 생성
-    model = ChatOpenAI(model="gpt-4")
+    # model = ChatOpenAI(model="gpt-4")
+    model = ChatOpenAI(model='gpt-3.5-turbo-16k')
 
     # StrOutputParser를 사용하여 결과 파싱
     output_parser = StrOutputParser()
