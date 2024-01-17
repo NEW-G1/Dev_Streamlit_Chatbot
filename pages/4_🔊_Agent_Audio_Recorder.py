@@ -229,7 +229,7 @@ def main():
     langchain = create_langchain()
     
     answer = invoke_langchain(langchain, translation_text)
-    st.write(answer)
+    st.subheader(answer)
     
     # result = translate_text(result,"korean", "English")
     # st.write(result)
