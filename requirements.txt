@@ -27,4 +27,8 @@ numexpr
 pymssql
 wikipedia
 faiss-cpu
-audio_recorder_streamlit
+# audio_recorder_streamlit
+streamlit-audiorecorder
+streamlit-extras
+moviepy
+pdfkit
