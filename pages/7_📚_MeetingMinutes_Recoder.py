@@ -65,27 +65,38 @@ def generate_transcript(audio_file):
     # Initialize the OpenAI client
     client = OpenAI()
 
-    # Open the audio file in binary read mode
-    audio = open(audio_file, "rb")
+    # Check if audio_file is not None
+    if audio_file is not None:
+        try:
+            # Open the audio file in binary read mode
+            audio = open(audio_file, "rb")
 
-    # Request transcription from OpenAI
-    transcript = client.audio.transcriptions.create(
-        file=audio,
-        model="whisper-1",
-        language="ko",
-        response_format="text",
-        temperature=0.0,
-    )
+            # Request transcription from OpenAI
+            transcript = client.audio.transcriptions.create(
+                file=audio,
+                model="whisper-1",
+                language="ko",
+                response_format="text",
+                temperature=0.0,
+            )
 
-    # Extract the file name without extension
-    name = os.path.splitext(audio_file)[0]
+            # Extract the file name without extension
+            name = os.path.splitext(audio_file)[0]
 
-    # Save the transcript to a text file
-    with open(f"{name}.txt", "w") as f:
-        f.write(transcript)
+            # Save the transcript to a text file
+            with open(f"{name}.txt", "w") as f:
+                f.write(transcript)
 
-    # Return the path to the generated transcript text file
-    return f"{name}.txt"
+            # Return the path to the generated transcript text file
+            return f"{name}.txt"
+        except FileNotFoundError:
+            print(f"Audio file '{audio_file}' not found or cannot be accessed.")
+        except Exception as e:
+            print(f"An error occurred during transcription: {e}")
+    else:
+        print("Audio file path is None.")
+
+    return None
 
 
 
@@ -156,13 +167,17 @@ def get_key_points_from_file(file_path):
     # Initialize text splitter
     text_splitter = RecursiveCharacterTextSplitter()
 
-    try:
-        # Read text content from the input file
-        # with open(file_path, "r", encoding="utf-8") as file:
-        with open(file_path, "r", encoding='cp949') as file:
-            text = file.read()
-    except FileNotFoundError:
-        raise FileNotFoundError("Input file not found or cannot be accessed.")
+    # Check if file_path is not None
+    if file_path is not None:
+        try:
+            # Read text content from the input file
+            with open(file_path, "r", encoding='cp949') as file:
+                text = file.read()
+        except FileNotFoundError:
+            raise FileNotFoundError("Input file not found or cannot be accessed.")
+    else:
+        print("File path is None.")
+        return []
 
     # Initialize ChatOpenAI instance with GPT-4 model
     llm = ChatOpenAI(temperature=0, model="gpt-4")
