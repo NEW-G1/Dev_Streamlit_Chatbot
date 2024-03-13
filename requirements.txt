@@ -19,6 +19,7 @@ cohere
 tiktoken
 openai
 langchain
+langchain_openai
 langchain_experimental
 langchain-community
 pypdf
