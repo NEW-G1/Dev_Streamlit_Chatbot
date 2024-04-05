@@ -4,6 +4,7 @@ import openai
 import os
 import sys
 import streamlit as st
+from streamlit.runtime.scriptrunner import add_script_run_ctx
 from audiorecorder import audiorecorder
 
 from langchain.chains.summarize import load_summarize_chain
@@ -22,13 +23,15 @@ os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
 # record_audio
 # 오디오 녹음
 #####################################################################################################################
-@st.cache(allow_output_mutation=True)
+@st.cache_data(show_spinner=False)
 def record_audio():
     audio_recoder = audiorecorder("Record", "Record")
     if len(audio_recoder) > 0:
         st.warning("버튼을 누르면 녹음을 종료합니다.")
-        audio_file_path = "recorded_audio.wav"
-        audio_recoder.export(audio_file_path, format="wav")
+        storage_path = os.environ.get("PERSISTENT_STORAGE_PATH", ".")
+        audio_file_path = os.path.join(storage_path, "recorded_audio.wav")
+        with add_script_run_ctx(audio_recoder.export):
+            audio_recoder.export(audio_file_path, format="wav")
         st.audio(audio_file_path, format="audio/wav")
         st.success("Recording Complete!")
         return audio_file_path
