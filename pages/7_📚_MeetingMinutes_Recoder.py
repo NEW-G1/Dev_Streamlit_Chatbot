@@ -22,23 +22,19 @@ os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
 # record_audio
 # 오디오 녹음
 #####################################################################################################################
-def record_audio():    
-    
+@st.cache(allow_output_mutation=True)
+def record_audio():
     audio_recoder = audiorecorder("Record", "Record")
-
-    if len(audio_recoder)>0:
+    if len(audio_recoder) > 0:
         st.warning("버튼을 누르면 녹음을 종료합니다.")
         audio_file_path = "recorded_audio.wav"
         audio_recoder.export(audio_file_path, format="wav")
-
-        # 저장된 오디오 파일을 표시
         st.audio(audio_file_path, format="audio/wav")
-        st.success("Recording Compliete!")    
+        st.success("Recording Complete!")
         return audio_file_path
     else:
         st.warning("버튼을 클릭하여 녹음을 시작하세요.")
         return None
-        
 
 
 #####################################################################################################################
