@@ -15,11 +15,12 @@
 # audio_recorder_streamlit==0.0.8
 
 streamlit
+openai
+validators
+langchain_openai
 cohere
 tiktoken
-openai
 langchain
-langchain_openai
 langchain_experimental
 langchain-community
 pypdf
@@ -28,8 +29,10 @@ numexpr
 pymssql
 wikipedia
 faiss-cpu
-audio_recorder_streamlit
 streamlit-audiorecorder
 streamlit-extras
 moviepy
 pdfkit
+pymysql
+langchain-anthropic 
+airtable-python-wrapper
