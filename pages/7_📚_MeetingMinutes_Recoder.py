@@ -28,7 +28,6 @@ def record_audio():
     audio_recoder = audiorecorder("Record", "Record")
 
     if len(audio_recoder) > 0:
-        st.warning("버튼을 누르면 녹음을 종료합니다.")
         audio_file_path = "recorded_audio.wav"
         with open(audio_file_path, "wb") as f:
             f.write(audio_recoder.export(format="wav"))
@@ -38,7 +37,6 @@ def record_audio():
         st.success("Recording Complete!")
         return audio_file_path
     else:
-        st.warning("버튼을 클릭하여 녹음을 시작하세요.")
         return None
 
 
@@ -252,11 +250,17 @@ def generate_meeting_minutes(key_points):
 #####################################################################################################################
 def main():
     
-    # 비디오파일 오디로 변환
+    # 오디오 녹음
     audio_file_path = record_audio()
+    
+    if audio_file_path is not None:
+        st.warning("버튼을 누르면 녹음을 종료합니다.")
+    else:
+        st.warning("버튼을 클릭하여 녹음을 시작하세요.")
+    
     print(f"*****convert video to_audio: {audio_file_path}*****")
     
-    # 오디오 파일 텍스트로 변환
+    # 오디오 파일 텍스트로 변환  
     transcript = generate_transcript(audio_file_path)
     print(f"*****generate_transcript: {transcript}*****")
     
@@ -271,4 +275,4 @@ def main():
     st.subheader(meeting_minutes)
 
 if __name__ == "__main__":
-    main()        
+    main()
