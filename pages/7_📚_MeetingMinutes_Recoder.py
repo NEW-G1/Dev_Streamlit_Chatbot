@@ -229,7 +229,11 @@ def generate_meeting_minutes(key_points):
     # Define the prompt template for meeting minutes
     prompt_mom = PromptTemplate(
         input_variables=['key_points'],
-        template="Beware!! Write Korean.Below are the pointers for a meeting. Generate a meeting minutes include section for key things discussed and action items accordingly.\n{key_points}.",
+        template='''
+        Beware!! Write Korean.
+        Below are the pointers for a meeting. 
+        Generate a meeting minutes include section for key things discussed and action items accordingly.\n{key_points}.
+        ''',
     )
 
     # Initialize LLMChain with the prompt template
