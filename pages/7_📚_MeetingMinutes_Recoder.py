@@ -23,7 +23,7 @@ os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
 # record_audio
 # 오디오 녹음
 #####################################################################################################################
-@st.cache_data
+@st.cache_resource(ttl="2h")
 def record_audio():
     audio_recoder = audiorecorder("Record", "Record")
 
