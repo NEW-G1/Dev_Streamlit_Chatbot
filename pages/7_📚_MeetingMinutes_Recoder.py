@@ -4,7 +4,6 @@ import openai
 import os
 import sys
 import streamlit as st
-from streamlit.runtime.scriptrunner import add_script_run_ctx
 from audiorecorder import audiorecorder
 
 from langchain.chains.summarize import load_summarize_chain
@@ -18,26 +17,27 @@ from langchain.docstore.document import Document
 
 os.environ["OPENAI_API_KEY"] = st.secrets.OPENAI_API_KEY
 
-
 #####################################################################################################################
 # record_audio
 # 오디오 녹음
 #####################################################################################################################
-@st.cache_resource(ttl="2h")
-def record_audio():
+def record_audio():    
+    
     audio_recoder = audiorecorder("Record", "Record")
 
-    if len(audio_recoder) > 0:
+    if len(audio_recoder)>0:
+        st.warning("버튼을 누르면 녹음을 종료합니다.")
         audio_file_path = "recorded_audio.wav"
-        with open(audio_file_path, "wb") as f:
-            f.write(audio_recoder.export(format="wav"))
+        audio_recoder.export(audio_file_path, format="wav")
 
         # 저장된 오디오 파일을 표시
         st.audio(audio_file_path, format="audio/wav")
-        st.success("Recording Complete!")
+        st.success("Recording Compliete!")    
         return audio_file_path
     else:
+        st.warning("버튼을 클릭하여 녹음을 시작하세요.")
         return None
+        
 
 
 #####################################################################################################################
@@ -229,11 +229,7 @@ def generate_meeting_minutes(key_points):
     # Define the prompt template for meeting minutes
     prompt_mom = PromptTemplate(
         input_variables=['key_points'],
-        template='''
-        Beware!! Write Korean.
-        Below are the pointers for a meeting. 
-        Generate a meeting minutes include section for key things discussed and action items accordingly.\n{key_points}.
-        ''',
+        template="Beware!! Write Korean.Below are the pointers for a meeting. Generate a meeting minutes include section for key things discussed and action items accordingly.\n{key_points}.",
     )
 
     # Initialize LLMChain with the prompt template
@@ -254,17 +250,11 @@ def generate_meeting_minutes(key_points):
 #####################################################################################################################
 def main():
     
-    # 오디오 녹음
+    # 비디오파일 오디로 변환
     audio_file_path = record_audio()
-    
-    if audio_file_path is not None:
-        st.warning("버튼을 누르면 녹음을 종료합니다.")
-    else:
-        st.warning("버튼을 클릭하여 녹음을 시작하세요.")
-    
     print(f"*****convert video to_audio: {audio_file_path}*****")
     
-    # 오디오 파일 텍스트로 변환  
+    # 오디오 파일 텍스트로 변환
     transcript = generate_transcript(audio_file_path)
     print(f"*****generate_transcript: {transcript}*****")
     
@@ -279,4 +269,4 @@ def main():
     st.subheader(meeting_minutes)
 
 if __name__ == "__main__":
-    main()
+    main()        
