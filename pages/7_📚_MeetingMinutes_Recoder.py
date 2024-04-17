@@ -170,7 +170,7 @@ def get_key_points_from_file(file_path):
     if file_path is not None:
         try:
             # Read text content from the input file
-            with open(file_path, "r", encoding='cp949') as file:
+            with open(file_path, "r", encoding='utf-8') as file:
                 text = file.read()
         except FileNotFoundError:
             raise FileNotFoundError("Input file not found or cannot be accessed.")
