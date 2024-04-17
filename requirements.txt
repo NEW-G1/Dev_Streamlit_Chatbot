@@ -36,3 +36,4 @@ pdfkit
 pymysql
 langchain-anthropic 
 airtable-python-wrapper
+ffmpeg-python
